@@ -28,7 +28,7 @@ from tensorflow.keras.models import load_model
 from DeepDL import *
 import warnings
 
-EPOCHS = 5
+EPOCHS = 15
 BATCH_SIZE = 16
 CEN_SEQ_LEN = 160
 CON_SEQ_LEN = 4 * CEN_SEQ_LEN
@@ -73,7 +73,7 @@ def train(vocab_size: int, d_fn: str, batch_size : int, epochs: int,
 
     #cen_lines, con_line_blocks, _ = load_data(d_fn)
     #data = pandas.read_csv(d_fn)
-    num_data = 100
+    num_data = 300000
     num_batches = num_data//batch_size
     #     del data
     with tf.distribute.MirroredStrategy().scope():
@@ -219,7 +219,7 @@ def test(vocab_size: int, w_fn: str, d_dn: list, o_fp: str = None) -> None:
         sk += BATCH_SIZE
         print(suspicious_scores)
 
-    data = pandas.read_csv(d_dn[0], encoding='utf-8')
+    data = pandas.read_csv(d_dn[0], encoding='utf-8', nrows = 64)
     data["score"] = suspicious_scores
     data.to_csv("results/deepdl_prediction.csv")
 
@@ -234,5 +234,5 @@ if __name__ == '__main__':
 
     train_file = args.train_file
     test_file = args.test_file
-    train(vocab_size=30000, d_fn = train_file, batch_size = BATCH_SIZE, epochs = EPOCHS)
+    #train(vocab_size=30000, d_fn = train_file, batch_size = BATCH_SIZE, epochs = EPOCHS)
     test(vocab_size=30000, w_fn = "results/weights.best_model.hdf5", d_dn = [test_file])
