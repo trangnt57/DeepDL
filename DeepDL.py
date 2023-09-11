@@ -19,7 +19,7 @@ class DeepDLConfig():
         self.__loss = DeepDLLoss()
         self.__accuracy = TransformerAccuracy()
         self.__model_checkpoint = tf.keras.callbacks.ModelCheckpoint(
-            "weights.best_model.hdf5",
+            "results/weights.best_model.hdf5",
             verbose=1,
             save_best_only=True, save_weights_only=True, mode="min", monitor="loss")
 
