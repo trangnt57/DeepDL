@@ -26,12 +26,15 @@ from tensorflow.keras.models import load_model
 # from deepdl import DeepDLConfig, DeepDLTransformer, DeepDL
 # from utils import PlotType, getpd, convert_to_dataframe, plot
 from DeepDL import *
+import warnings
 
 EPOCHS = 5
 BATCH_SIZE = 16
 CEN_SEQ_LEN = 160
 CON_SEQ_LEN = 4 * CEN_SEQ_LEN
 DUMMY_DATA = tf.constant([[0]])
+
+warnings.filterwarnings("ignore")
 
 def generate_data(data_file, batch_size, epochs):
     df = pandas.read_csv(data_file, encoding='utf-8', nrows = 200000)
@@ -46,7 +49,7 @@ def generate_data(data_file, batch_size, epochs):
             labels = []
             for b in range(batch_size):
                 if i < df.shape[0]:
-                    central_line = tokenizer.encode(df.iloc[i]["raw_changed_line"]).ids
+                    central_line = tokenizer.encode(str(df.iloc[i]["raw_changed_line"])).ids
                     central_line.append(tokenizer.token_to_id("[EOL]"))
                     cen_lines.append(central_line)
                     context_lines = tokenizer.encode(str(df.iloc[i]["forward"]) + "\n" + str(df.iloc[i]["backward"])).ids
@@ -70,7 +73,7 @@ def train(vocab_size: int, d_fn: str, batch_size : int, epochs: int,
 
     #cen_lines, con_line_blocks, _ = load_data(d_fn)
     #data = pandas.read_csv(d_fn)
-    num_data = 300
+    num_data = 100
     num_batches = num_data//batch_size
     #     del data
     with tf.distribute.MirroredStrategy().scope():
@@ -179,7 +182,7 @@ def test(vocab_size: int, w_fn: str, d_dn: list, o_fp: str = None) -> None:
     #     os.makedirs(o_fp, exist_ok=True)
     test_data = pandas.read_csv(d_dn[0])
     # num_testing_samples = test_data.shape[0] - 1
-    num_testing_samples = 200
+    num_testing_samples = 50
     del test_data
     suspicious_scores = []
     sk =  0
