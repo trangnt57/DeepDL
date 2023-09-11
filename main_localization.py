@@ -231,6 +231,5 @@ if __name__ == '__main__':
 
     train_file = args.train_file
     test_file = args.test_file
-    embedding_graph_dir = args.embedding_graph_dir
     train(vocab_size=30000, d_fn = train_file, batch_size = BATCH_SIZE, epochs = EPOCHS)
     test(vocab_size=30000, w_fn = "results/weights.best_model.hdf5", d_dn = [test_file])
