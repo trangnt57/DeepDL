@@ -72,10 +72,10 @@ def train(vocab_size: int, d_fn: str, batch_size : int, epochs: int,
     #     os.makedirs(o_fp, exist_ok=True)
 
     #cen_lines, con_line_blocks, _ = load_data(d_fn)
-    #data = pandas.read_csv(d_fn)
-    num_data = 300000
+    data = pandas.read_csv(d_fn)
+    num_data = data.shape[0] - 1
     num_batches = num_data//batch_size
-    #     del data
+    del data
     with tf.distribute.MirroredStrategy().scope():
         #cen_enc_in, con_enc_in, dec_in, dec_out = preprocess(cen_lines,
         #                                                    con_line_blocks)
@@ -181,8 +181,8 @@ def test(vocab_size: int, w_fn: str, d_dn: list, o_fp: str = None) -> None:
 
     #     os.makedirs(o_fp, exist_ok=True)
     test_data = pandas.read_csv(d_dn[0])
-    # num_testing_samples = test_data.shape[0] - 1
-    num_testing_samples = 50
+    num_testing_samples = test_data.shape[0] - 1
+
     del test_data
     suspicious_scores = []
     sk =  0
@@ -210,16 +210,14 @@ def test(vocab_size: int, w_fn: str, d_dn: list, o_fp: str = None) -> None:
                    tf.constant([list_con_line_blocks[0][0]]),
                    tf.constant([cen_line])], training=False)
             model.load_weights(w_fn)
-            print("model loaded")
             total_outs = DeepDL(model, sos,eos).evaluate(
                 [list_cen_lines, list_con_line_blocks], list_labels)
             for out in total_outs:
                 for x in out:
                     suspicious_scores.append(x[-1])
         sk += BATCH_SIZE
-        print(suspicious_scores)
 
-    data = pandas.read_csv(d_dn[0], encoding='utf-8', nrows = 64)
+    data = pandas.read_csv(d_dn[0], encoding='utf-8')
     data["score"] = suspicious_scores
     data.to_csv("results/deepdl_prediction.csv")
 
@@ -234,5 +232,5 @@ if __name__ == '__main__':
 
     train_file = args.train_file
     test_file = args.test_file
-    #train(vocab_size=30000, d_fn = train_file, batch_size = BATCH_SIZE, epochs = EPOCHS)
+    train(vocab_size=30000, d_fn = train_file, batch_size = BATCH_SIZE, epochs = EPOCHS)
     test(vocab_size=30000, w_fn = "results/weights.best_model.hdf5", d_dn = [test_file])
