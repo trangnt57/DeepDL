@@ -21,7 +21,7 @@ class DeepDLConfig():
         self.__model_checkpoint = tf.keras.callbacks.ModelCheckpoint(
             "weights.best_model.hdf5",
             verbose=1,
-            save_best_only=True, save_weights_only=True)
+            save_best_only=True, save_weights_only=True, mode="max", monitor="accuracy")
 
     @property
     def optimizer(self):
