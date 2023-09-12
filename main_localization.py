@@ -37,7 +37,7 @@ DUMMY_DATA = tf.constant([[0]])
 warnings.filterwarnings("ignore")
 
 def generate_data(data_file, batch_size, epochs):
-    df = pandas.read_csv(data_file, encoding='utf-8', nrows = 150000)
+    df = pandas.read_csv(data_file, encoding='utf-8', nrows = 70000)
     tokenizer = Tokenizer.from_file("resource/tokenizer.json")
     i = 0
     ep = 0
@@ -73,7 +73,7 @@ def train(vocab_size: int, d_fn: str, batch_size : int, epochs: int,
 
     #cen_lines, con_line_blocks, _ = load_data(d_fn)
     data = pandas.read_csv(d_fn)
-    num_data = 150000
+    num_data = 70000
     num_batches = num_data//batch_size
     del data
     with tf.distribute.MirroredStrategy().scope():
