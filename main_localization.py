@@ -101,7 +101,7 @@ def load_data_test(fn, _skiprows, _nrows):
                   'raw_changed_line', 'blame_line', 'line_number', 'index_ctg', 'forward',
                   'backward']
     for idx, row in df.iterrows():
-        central_line = tokenizer.encode(df.at[idx, "raw_changed_line"]).ids
+        central_line = tokenizer.encode(str(df.at[idx, "raw_changed_line"])).ids
         central_line.append(tokenizer.token_to_id("[EOL]"))
         cen_lines.append(central_line)
         context_lines = tokenizer.encode(str(df.at[idx, "forward"]) + "\n" + str(df.at[idx, "backward"])).ids
